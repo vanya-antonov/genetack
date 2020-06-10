@@ -9,7 +9,8 @@
     - Make sure that the following tools are in your $PATH: gm, gmsn.pl, gmhmmp
 
 # Installation Instructions
-* Unpack the distribution archive and 'cd genetack-X.XX'
+* Download the [latest release](https://github.com/vanya-antonov/genetack/releases)
+* Unpack the distribution archive and `cd genetack-X.XX`
 * Type 'make' and you are good to go!
 * For convenience you can copy the distribution folder to a desired location and add it to your $PATH
 
