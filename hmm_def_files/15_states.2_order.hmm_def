@@ -1,0 +1,593 @@
+####
+# 
+# Author: Ivan Antonov (ivan.antonov@gatech.edu)
+# 
+####
+# 
+# This is the hmm_def file. It contains the definition of a HMM model for FSMark program.
+# See http://topaz.gatech.edu/FSMark/???XXX??? for detailed information about the format.
+# 
+
+<FILE_INFO>
+	version = 0.01
+	svn_str = $Id: 9_states.2_order.hmm_def 711 2008-11-07 15:23:56Z antonov $
+</FILE_INFO>
+
+<HMM_MODEL>
+	name  = 15_states_hmm
+	descr = A model with second order emission probablities with 15 states, including states for intesecting genes and stop codons
+</HMM_MODEL>
+
+<EMISSION_LIST>
+	<ITEM>
+		id   = 0
+		name = 0
+		<PROBABILITIES>
+			AAA	=	0.03313
+			AAC	=	0.02201
+			AAG	=	0.00997
+			AAT	=	0.0166
+			ACA	=	0.00637
+			ACC	=	0.02425
+			ACG	=	0.01471
+			ACT	=	0.00871
+			AGA	=	0.00143
+			AGC	=	0.01642
+			AGG	=	0.00086
+			AGT	=	0.00844
+			ATA	=	0.00323
+			ATC	=	0.02572
+			ATG	=	0.02515
+			ATT	=	0.03022
+			CAA	=	0.01522
+			CAC	=	0.00985
+			CAG	=	0.02979
+			CAT	=	0.01276
+			CCA	=	0.0083
+			CCC	=	0.00543
+			CCG	=	0.0243
+			CCT	=	0.00674
+			CGA	=	0.0033
+			CGC	=	0.02289
+			CGG	=	0.0054
+			CGT	=	0.02159
+			CTA	=	0.00365
+			CTC	=	0.0113
+			CTG	=	0.05517
+			CTT	=	0.01059
+			GAA	=	0.04014
+			GAC	=	0.01968
+			GAG	=	0.01806
+			GAT	=	0.03231
+			GCA	=	0.02025
+			GCC	=	0.02647
+			GCG	=	0.03523
+			GCT	=	0.01529
+			GGA	=	0.00759
+			GGC	=	0.03095
+			GGG	=	0.01121
+			GGT	=	0.02539
+			GTA	=	0.01081
+			GTC	=	0.01565
+			GTG	=	0.027
+			GTT	=	0.01823
+			TAA	=	0.00001
+			TAC	=	0.01239
+			TAG	=	0.00001
+			TAT	=	0.01568
+			TCA	=	0.0065
+			TCC	=	0.00869
+			TCG	=	0.00906
+			TCT	=	0.0081
+			TGA	=	0.00001
+			TGC	=	0.00636
+			TGG	=	0.01547
+			TGT	=	0.00488
+			TTA	=	0.01304
+			TTC	=	0.01677
+			TTG	=	0.01355
+			TTT	=	0.02173
+		</PROBABILITIES>
+	</ITEM>
+	<ITEM>
+		id   = 1
+		name = 1
+		<PROBABILITIES>
+			AAA	=	0.0245
+			AAC	=	0.02154
+			AAG	=	0.03182
+			AAT	=	0.01044
+			ACA	=	0.01561
+			ACC	=	0.01404
+			ACG	=	0.02379
+			ACT	=	0.01049
+			AGA	=	0.01245
+			AGC	=	0.01846
+			AGG	=	0.01738
+			AGT	=	0.00939
+			ATA	=	0.01964
+			ATC	=	0.02045
+			ATG	=	0.02635
+			ATT	=	0.0109
+			CAA	=	0.00971
+			CAC	=	0.01131
+			CAG	=	0.01395
+			CAT	=	0.00641
+			CCA	=	0.01843
+			CCC	=	0.01047
+			CCG	=	0.02536
+			CCT	=	0.01064
+			CGA	=	0.01602
+			CGC	=	0.02954
+			CGG	=	0.02707
+			CGT	=	0.01077
+			CTA	=	0.00712
+			CTC	=	0.00718
+			CTG	=	0.01743
+			CTT	=	0.00715
+			GAA	=	0.00375
+			GAC	=	0.00347
+			GAG	=	0.00277
+			GAT	=	0.00228
+			GCA	=	0.01795
+			GCC	=	0.01497
+			GCG	=	0.03168
+			GCT	=	0.01208
+			GGA	=	0.00742
+			GGC	=	0.01177
+			GGG	=	0.00917
+			GGT	=	0.00455
+			GTA	=	0.01555
+			GTC	=	0.01383
+			GTG	=	0.01944
+			GTT	=	0.01142
+			TAA	=	0.00908
+			TAC	=	0.00971
+			TAG	=	0.00687
+			TAT	=	0.00507
+			TCA	=	0.01952
+			TCC	=	0.0122
+			TCG	=	0.02567
+			TCT	=	0.01211
+			TGA	=	0.02997
+			TGC	=	0.03275
+			TGG	=	0.0431
+			TGT	=	0.01521
+			TTA	=	0.01982
+			TTC	=	0.01484
+			TTG	=	0.03282
+			TTT	=	0.01336
+		</PROBABILITIES>
+	</ITEM>
+	<ITEM>
+		id   = 2
+		name = 2
+		<PROBABILITIES>
+			AAA	=	0.01562
+			AAC	=	0.01211
+			AAG	=	0.00497
+			AAT	=	0.01432
+			ACA	=	0.01247
+			ACC	=	0.00894
+			ACG	=	0.00972
+			ACT	=	0.01489
+			AGA	=	0.01811
+			AGC	=	0.01483
+			AGG	=	0.01228
+			AGT	=	0.01021
+			ATA	=	0.0036
+			ATC	=	0.00529
+			ATG	=	0.00359
+			ATT	=	0.01172
+			CAA	=	0.02237
+			CAC	=	0.01574
+			CAG	=	0.01323
+			CAT	=	0.02016
+			CCA	=	0.01381
+			CCC	=	0.00954
+			CCG	=	0.01313
+			CCT	=	0.0152
+			CGA	=	0.03351
+			CGC	=	0.02594
+			CGG	=	0.02704
+			CGT	=	0.02001
+			CTA	=	0.00902
+			CTC	=	0.009
+			CTG	=	0.01306
+			CTT	=	0.01425
+			GAA	=	0.02091
+			GAC	=	0.01344
+			GAG	=	0.0046
+			GAT	=	0.02691
+			GCA	=	0.02492
+			GCC	=	0.0156
+			GCG	=	0.01875
+			GCT	=	0.03325
+			GGA	=	0.02591
+			GGC	=	0.02943
+			GGG	=	0.01625
+			GGT	=	0.02513
+			GTA	=	0.0055
+			GTC	=	0.00683
+			GTG	=	0.00612
+			GTT	=	0.02147
+			TAA	=	0.02239
+			TAC	=	0.01262
+			TAG	=	0.00414
+			TAT	=	0.02299
+			TCA	=	0.01647
+			TCC	=	0.01071
+			TCG	=	0.01162
+			TCT	=	0.01751
+			TGA	=	0.03278
+			TGC	=	0.02704
+			TGG	=	0.01972
+			TGT	=	0.0165
+			TTA	=	0.01002
+			TTC	=	0.01112
+			TTG	=	0.004
+			TTT	=	0.01769
+		</PROBABILITIES>
+	</ITEM>
+	<ITEM>
+		id   = 3
+		name = 0_1
+		<PROBABILITIES>
+			AAA	=	0.028815
+			AAC	=	0.021775
+			AAG	=	0.020895
+			AAT	=	0.01352
+			ACA	=	0.01099
+			ACC	=	0.019145
+			ACG	=	0.01925
+			ACT	=	0.0096
+			AGA	=	0.00694
+			AGC	=	0.01744
+			AGG	=	0.00912
+			AGT	=	0.008915
+			ATA	=	0.011435
+			ATC	=	0.023085
+			ATG	=	0.02575
+			ATT	=	0.02056
+			CAA	=	0.012465
+			CAC	=	0.01058
+			CAG	=	0.02187
+			CAT	=	0.009585
+			CCA	=	0.013365
+			CCC	=	0.00795
+			CCG	=	0.02483
+			CCT	=	0.00869
+			CGA	=	0.00966
+			CGC	=	0.026215
+			CGG	=	0.016235
+			CGT	=	0.01618
+			CTA	=	0.005385
+			CTC	=	0.00924
+			CTG	=	0.0363
+			CTT	=	0.00887
+			GAA	=	0.021945
+			GAC	=	0.011575
+			GAG	=	0.010415
+			GAT	=	0.017295
+			GCA	=	0.0191
+			GCC	=	0.02072
+			GCG	=	0.033455
+			GCT	=	0.013685
+			GGA	=	0.007505
+			GGC	=	0.02136
+			GGG	=	0.01019
+			GGT	=	0.01497
+			GTA	=	0.01318
+			GTC	=	0.01474
+			GTG	=	0.02322
+			GTT	=	0.014825
+			TAA	=	0.004545
+			TAC	=	0.01105
+			TAG	=	0.00344
+			TAT	=	0.010375
+			TCA	=	0.01301
+			TCC	=	0.010445
+			TCG	=	0.017365
+			TCT	=	0.010105
+			TGA	=	0.01499
+			TGC	=	0.019555
+			TGG	=	0.029285
+			TGT	=	0.010045
+			TTA	=	0.01643
+			TTC	=	0.015805
+			TTG	=	0.023185
+			TTT	=	0.017545
+		</PROBABILITIES>
+	</ITEM>
+	<ITEM>
+		id   = 4
+		name = stop
+		<PROBABILITIES>
+			TAG = 0.34
+			TAA = 0.33
+			TGA = 0.33
+		</PROBABILITIES>
+	</ITEM>
+</EMISSION_LIST>
+
+<STATE_LIST>
+	<ITEM>
+		id           = 0
+		name         = 0
+		periodicity  = 3
+		emission_set = 0, 1, 2    
+	</ITEM>
+	<ITEM>
+		id           = 1
+		name         = 1
+		periodicity  = 3
+		emission_set = 2, 0, 1
+	</ITEM>
+	<ITEM>
+		id           = 2
+		name         = 2
+		periodicity  = 3
+		emission_set = 1, 2, 0
+	</ITEM>
+	<ITEM>
+		id           = 3
+		name         = 0+1
+		periodicity  = 3
+		emission_set = 0, 3, 1
+	</ITEM>
+	<ITEM>
+		id           = 4
+		name         = 0+2
+		periodicity  = 3
+		emission_set = 3, 1, 0
+	</ITEM>
+	<ITEM>
+		id           = 5
+		name         = 1+1
+		periodicity  = 3
+		emission_set = 1, 0, 3
+	</ITEM>
+	<ITEM>
+		id           = 6
+		name         = 1+2
+		periodicity  = 3
+		emission_set = 0, 3, 1
+	</ITEM>
+	<ITEM>
+		id           = 7
+		name         = 2+1
+		periodicity  = 3
+		emission_set = 3, 1, 0
+	</ITEM>
+	<ITEM>
+		id           = 8
+		name         = 2+2
+		periodicity  = 3
+		emission_set = 1, 0, 3
+	</ITEM>
+	<ITEM>
+		id           = 9
+		name         = stop_0+1
+		periodicity  = 1
+		emission_set = 4
+	</ITEM>
+	<ITEM>
+		id           = 10
+		name         = stop_0+2
+		periodicity  = 1
+		emission_set = 4
+	</ITEM>
+	<ITEM>
+		id           = 11
+		name         = stop_1+1
+		periodicity  = 1
+		emission_set = 4
+	</ITEM>
+	<ITEM>
+		id           = 12
+		name         = stop_1+2
+		periodicity  = 1
+		emission_set = 4
+	</ITEM>
+	<ITEM>
+		id           = 13
+		name         = stop_2+1
+		periodicity  = 1
+		emission_set = 4
+	</ITEM>
+	<ITEM>
+		id           = 14
+		name         = stop_2+2
+		periodicity  = 1
+		emission_set = 4
+	</ITEM>
+</STATE_LIST>
+
+<TRANSITION_LIST>
+	# Transitions from state 0
+	<ITEM>
+		from_state  = 0
+		to_state    = 0
+		probability = 0.99
+	</ITEM>
+	<ITEM>
+		from_state  = 0
+		to_state    = 1
+		probability = 0.001
+	</ITEM>
+	<ITEM>
+		from_state  = 0
+		to_state    = 2
+		probability = 0.001
+	</ITEM>
+	<ITEM>
+		from_state  = 0
+		to_state    = 3
+		probability = 0.004
+	</ITEM>
+	<ITEM>
+		from_state  = 0
+		to_state    = 4
+		probability = 0.004
+	</ITEM>
+
+
+	# Transitions from state 1
+	<ITEM>
+		from_state  = 1
+		to_state    = 1
+		probability = 0.99
+	</ITEM>
+	<ITEM>
+		from_state  = 1
+		to_state    = 0
+		probability = 0.001
+	</ITEM>
+	<ITEM>
+		from_state  = 1
+		to_state    = 2
+		probability = 0.001
+	</ITEM>
+	<ITEM>
+		from_state  = 1
+		to_state    = 5
+		probability = 0.004
+	</ITEM>
+	<ITEM>
+		from_state  = 1
+		to_state    = 6
+		probability = 0.004
+	</ITEM>
+
+	
+	# Transitions from state 2
+	<ITEM>
+		from_state  = 2
+		to_state    = 2
+		probability = 0.99
+	</ITEM>
+	<ITEM>
+		from_state  = 2
+		to_state    = 0
+		probability = 0.001
+	</ITEM>
+	<ITEM>
+		from_state  = 2
+		to_state    = 1
+		probability = 0.001
+	</ITEM>
+	<ITEM>
+		from_state  = 2
+		to_state    = 7
+		probability = 0.004
+	</ITEM>
+	<ITEM>
+		from_state  = 2
+		to_state    = 8
+		probability = 0.004
+	</ITEM>
+
+	# Transitions from state 3: 0+1
+	<ITEM>
+		from_state  = 3
+		to_state    = 3
+		probability = 0.7
+	</ITEM>
+	<ITEM>
+		from_state  = 3
+		to_state    = 9
+		probability = 0.3
+	</ITEM>
+	<ITEM>
+		from_state  = 9
+		to_state    = 1
+		probability = 1
+	</ITEM>
+
+	# Transitions from state 4: 0+2
+	<ITEM>
+		from_state  = 4
+		to_state    = 4
+		probability = 0.7
+	</ITEM>
+	<ITEM>
+		from_state  = 4
+		to_state    = 10
+		probability = 0.3
+	</ITEM>
+	<ITEM>
+		from_state  = 10
+		to_state    = 2
+		probability = 1
+	</ITEM>
+
+	# Transitions from state 5: 1+1
+	<ITEM>
+		from_state  = 5
+		to_state    = 5
+		probability = 0.7
+	</ITEM>
+	<ITEM>
+		from_state  = 5
+		to_state    = 11
+		probability = 0.3
+	</ITEM>
+	<ITEM>
+		from_state  = 11
+		to_state    = 2
+		probability = 1
+	</ITEM>
+
+	# Transitions from state 6: 1+2
+	<ITEM>
+		from_state  = 6
+		to_state    = 6
+		probability = 0.7
+	</ITEM>
+	<ITEM>
+		from_state  = 6
+		to_state    = 12
+		probability = 0.3
+	</ITEM>
+	<ITEM>
+		from_state  = 12
+		to_state    = 0
+		probability = 1
+	</ITEM>
+
+	# Transitions from state 7: 2+1
+	<ITEM>
+		from_state  = 7
+		to_state    = 7
+		probability = 0.7
+	</ITEM>
+	<ITEM>
+		from_state  = 7
+		to_state    = 13
+		probability = 0.3
+	</ITEM>
+	<ITEM>
+		from_state  = 13
+		to_state    = 0
+		probability = 1
+	</ITEM>
+
+	# Transitions from state 8: 2+2
+	<ITEM>
+		from_state  = 8
+		to_state    = 8
+		probability = 0.7
+	</ITEM>
+	<ITEM>
+		from_state  = 8
+		to_state    = 14
+		probability = 0.3
+	</ITEM>
+	<ITEM>
+		from_state  = 14
+		to_state    = 1
+		probability = 1
+	</ITEM>
+</TRANSITION_LIST>
+
+

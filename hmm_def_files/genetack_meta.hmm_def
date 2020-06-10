@@ -1,0 +1,630 @@
+###
+# <TMPL_VAR NAME='head_comment_line'>
+#
+####
+# PARAMETERS
+#
+#    trans_cod1_cod1    = <TMPL_VAR NAME='trans_cod1_cod1'>
+#    trans_cod1_cod2    = <TMPL_VAR NAME='trans_cod1_cod2'>
+#    trans_cod_ovlp     = <TMPL_VAR NAME='trans_cod_ovlp'>
+#    trans_cod_deadend  = <TMPL_VAR NAME='trans_cod_deadend'>
+#    trans_cod_nc       = <TMPL_VAR NAME='trans_cod_nc'>
+#    trans_nc_nc        = <TMPL_VAR NAME='trans_nc_nc'>
+#    trans_nc_cod       = <TMPL_VAR NAME='trans_nc_cod'>
+#    trans_start_except = <TMPL_VAR NAME='trans_start_except'>
+#
+
+<FILE_INFO>
+	version = <TMPL_VAR NAME='file_info_ver'>
+	svn_str = $Id: genetack_gm.hmm_def 1224 2010-02-25 05:11:12Z antonov $
+</FILE_INFO>
+
+<HMM_MODEL>
+	name  = <TMPL_VAR NAME='hmm_model_name'>
+	descr = <TMPL_VAR NAME='hmm_model_descr'>
+</HMM_MODEL>
+
+<OPTIONS>
+	# It's not allowed to start or end with overlap state
+	dont_start_with = 3,4,5,6,7,8
+	dont_end_with   = 3,4,5,6,7,8
+</OPTIONS>
+
+<EMISSION_LIST>
+<TMPL_LOOP NAME='emission_list_arr'>
+<TMPL_IF NAME='comment'>	# <TMPL_VAR NAME='comment'></TMPL_IF>
+	<ITEM>
+		id   = <TMPL_VAR NAME='id'>
+		name = <TMPL_VAR NAME='name'>
+		<PROBABILITIES>
+<TMPL_VAR NAME='probs_str'>
+		</PROBABILITIES>
+	</ITEM>
+</TMPL_LOOP>
+</EMISSION_LIST>
+
+
+<STATE_LIST>
+	<ITEM>
+		id           = 0
+		name         = 0
+		periodicity  = 3
+		############# state_10 = 2_wo_stop
+		emission_set = 0, 1, 10    
+	</ITEM>
+	<ITEM>
+		id           = 1
+		name         = 1
+		periodicity  = 3
+		############# state_10 = 2_wo_stop
+		emission_set = 10, 0, 1
+	</ITEM>
+	<ITEM>
+		id           = 2
+		name         = 2
+		periodicity  = 3
+		############# state_10 = 2_wo_stop
+		emission_set = 1, 10, 0
+	</ITEM>
+	<ITEM>
+		id           = 3
+		name         = 0+1
+		periodicity  = 3
+		emission_set = 8, 3, 1
+	</ITEM>
+	<ITEM>
+		id           = 4
+		name         = 0+2
+		periodicity  = 3
+		emission_set = 3, 9, 0
+	</ITEM>
+	<ITEM>
+		id           = 5
+		name         = 1+1
+		periodicity  = 3
+		emission_set = 1, 8, 3
+	</ITEM>
+	<ITEM>
+		id           = 6
+		name         = 1+2
+		periodicity  = 3
+		emission_set = 0, 3, 9
+	</ITEM>
+	<ITEM>
+		id           = 7
+		name         = 2+1
+		periodicity  = 3
+		emission_set = 3, 1, 8
+	</ITEM>
+	<ITEM>
+		id           = 8
+		name         = 2+2
+		periodicity  = 3
+		emission_set = 9, 0, 3
+	</ITEM>
+	<ITEM>
+		id           = 9
+		name         = stop_0+1
+		periodicity  = 3
+		emission_set = 7,7,4
+	</ITEM>
+	<ITEM>
+		id           = 10
+		name         = stop_0+2
+		periodicity  = 3
+		emission_set = 7,7,4
+	</ITEM>
+	<ITEM>
+		id           = 11
+		name         = stop_1+1
+		periodicity  = 3
+		emission_set = 4,7,7
+	</ITEM>
+	<ITEM>
+		id           = 12
+		name         = stop_1+2
+		periodicity  = 3
+		emission_set = 4,7,7
+	</ITEM>
+	<ITEM>
+		id           = 13
+		name         = stop_2+1
+		periodicity  = 3
+		emission_set = 7,4,7
+	</ITEM>
+	<ITEM>
+		id           = 14
+		name         = stop_2+2
+		periodicity  = 3
+		emission_set = 7,4,7
+	</ITEM>
+	<ITEM>
+		id           = 15
+		name         = stop_0_nc
+		periodicity  = 3
+		emission_set = 7,7,4
+	</ITEM>
+	<ITEM>
+		id           = 16
+		name         = start_nc_0
+		periodicity  = 3
+		emission_set = 7,7,5
+	</ITEM>
+	<ITEM>
+		id           = 17
+		name         = stop_1_nc
+		periodicity  = 3
+		emission_set = 4,7,7
+	</ITEM>
+	<ITEM>
+		id           = 18
+		name         = start_nc_1
+		periodicity  = 3
+		emission_set = 5,7,7
+	</ITEM>
+	<ITEM>
+		id           = 19
+		name         = stop_2_nc
+		periodicity  = 3
+		emission_set = 7,4,7
+	</ITEM>
+	<ITEM>
+		id           = 20
+		name         = start_nc_2
+		periodicity  = 3
+		emission_set = 7,5,7
+	</ITEM>
+	<ITEM>
+		id           = 21
+		name         = nc
+		periodicity  = 1
+		emission_set = 6
+	</ITEM>
+	<ITEM>
+		id           = 22
+		name         = start_0+1
+		periodicity  = 3
+		emission_set = 5,7,7
+	</ITEM>
+	<ITEM>
+		id           = 23
+		name         = start_0+2
+		periodicity  = 3
+		emission_set = 7,5,7
+	</ITEM>
+	<ITEM>
+		id           = 24
+		name         = start_1+1
+		periodicity  = 3
+		emission_set = 7,5,7
+	</ITEM>
+	<ITEM>
+		id           = 25
+		name         = start_1+2
+		periodicity  = 3
+		emission_set = 7,7,5
+	</ITEM>
+	<ITEM>
+		id           = 26
+		name         = start_2+1
+		periodicity  = 3
+		emission_set = 7,7,5
+	</ITEM>
+	<ITEM>
+		id           = 27
+		name         = start_2+2
+		periodicity  = 3
+		emission_set = 5,7,7
+	</ITEM>
+	
+	### Deadend state -- can't emit and doesn't have outgoing arrows
+	<ITEM>
+		id           = 28
+		name         = deadend
+		periodicity  = 1
+		emission_set = 7
+	</ITEM>
+</STATE_LIST>
+
+
+<TRANSITION_LIST>
+	# Transitions from state 0
+	<ITEM>
+		from_state  = 0
+		to_state    = 0
+		probability = <TMPL_VAR NAME='trans_cod1_cod1'>
+	</ITEM>
+	<ITEM>
+		from_state  = 0
+		to_state    = 1
+		probability = <TMPL_VAR NAME='trans_cod1_cod2'>
+	</ITEM>
+	<ITEM>
+		from_state  = 0
+		to_state    = 2
+		probability = <TMPL_VAR NAME='trans_cod1_cod2'>
+	</ITEM>
+	<ITEM>
+		from_state  = 0
+		to_state    = 22
+		probability = <TMPL_VAR NAME='trans_cod_ovlp'>
+		<EMISSION_STR_EXCEPTIONS>
+			ATG = <TMPL_VAR NAME='trans_start_except'>
+			GTG = <TMPL_VAR NAME='trans_start_except'>
+			TTG = <TMPL_VAR NAME='trans_start_except'>
+		</EMISSION_STR_EXCEPTIONS>
+	</ITEM>
+	<ITEM>
+		from_state  = 22
+		to_state    = 3
+		probability = 1
+	</ITEM>
+	<ITEM>
+		from_state  = 0
+		to_state    = 23
+		probability = <TMPL_VAR NAME='trans_cod_ovlp'>
+		<EMISSION_STR_EXCEPTIONS>
+			ATG = <TMPL_VAR NAME='trans_start_except'>
+			GTG = <TMPL_VAR NAME='trans_start_except'>
+			TTG = <TMPL_VAR NAME='trans_start_except'>
+		</EMISSION_STR_EXCEPTIONS>
+	</ITEM>
+	<ITEM>
+		from_state  = 23
+		to_state    = 4
+		probability = 1
+	</ITEM>
+	<ITEM>
+		from_state  = 0
+		to_state    = 15
+		probability = <TMPL_VAR NAME='trans_cod_nc'>
+		<EMISSION_STR_EXCEPTIONS>
+			TAA = 1
+			TAG = 1
+			TGA = 1
+		</EMISSION_STR_EXCEPTIONS>
+	</ITEM>
+	<ITEM>
+		from_state  = 15
+		to_state    = 21
+		probability = 1
+	</ITEM>
+	# To deadend state
+	<ITEM>
+		from_state  = 0
+		to_state    = 28
+		probability = <TMPL_VAR NAME='trans_cod_deadend'>
+	</ITEM>
+	
+
+
+	# Transitions from state 1
+	<ITEM>
+		from_state  = 1
+		to_state    = 1
+		probability = <TMPL_VAR NAME='trans_cod1_cod1'>
+	</ITEM>
+	<ITEM>
+		from_state  = 1
+		to_state    = 0
+		probability = <TMPL_VAR NAME='trans_cod1_cod2'>
+	</ITEM>
+	<ITEM>
+		from_state  = 1
+		to_state    = 2
+		probability = <TMPL_VAR NAME='trans_cod1_cod2'>
+	</ITEM>
+	<ITEM>
+		from_state  = 1
+		to_state    = 24
+		probability = <TMPL_VAR NAME='trans_cod_ovlp'>
+		<EMISSION_STR_EXCEPTIONS>
+			ATG = <TMPL_VAR NAME='trans_start_except'>
+			GTG = <TMPL_VAR NAME='trans_start_except'>
+			TTG = <TMPL_VAR NAME='trans_start_except'>
+		</EMISSION_STR_EXCEPTIONS>
+	</ITEM>
+	<ITEM>
+		from_state  = 24
+		to_state    = 5
+		probability = 1
+	</ITEM>
+	<ITEM>
+		from_state  = 1
+		to_state    = 25
+		probability = <TMPL_VAR NAME='trans_cod_ovlp'>
+		<EMISSION_STR_EXCEPTIONS>
+			ATG = <TMPL_VAR NAME='trans_start_except'>
+			GTG = <TMPL_VAR NAME='trans_start_except'>
+			TTG = <TMPL_VAR NAME='trans_start_except'>
+		</EMISSION_STR_EXCEPTIONS>
+	</ITEM>
+	<ITEM>
+		from_state  = 25
+		to_state    = 6
+		probability = 1
+	</ITEM>
+	<ITEM>
+		from_state  = 1
+		to_state    = 17
+		probability = <TMPL_VAR NAME='trans_cod_nc'>
+		<EMISSION_STR_EXCEPTIONS>
+			TAA = 1
+			TAG = 1
+			TGA = 1
+		</EMISSION_STR_EXCEPTIONS>
+	</ITEM>
+	<ITEM>
+		from_state  = 17
+		to_state    = 21
+		probability = 1
+	</ITEM>
+	# To deadend state
+	<ITEM>
+		from_state  = 1
+		to_state    = 28
+		probability = <TMPL_VAR NAME='trans_cod_deadend'>
+	</ITEM>
+
+	
+	# Transitions from state 2
+	<ITEM>
+		from_state  = 2
+		to_state    = 2
+		probability = <TMPL_VAR NAME='trans_cod1_cod1'>
+	</ITEM>
+	<ITEM>
+		from_state  = 2
+		to_state    = 0
+		probability = <TMPL_VAR NAME='trans_cod1_cod2'>
+	</ITEM>
+	<ITEM>
+		from_state  = 2
+		to_state    = 1
+		probability = <TMPL_VAR NAME='trans_cod1_cod2'>
+	</ITEM>
+	<ITEM>
+		from_state  = 2
+		to_state    = 26
+		probability = <TMPL_VAR NAME='trans_cod_ovlp'>
+		<EMISSION_STR_EXCEPTIONS>
+			ATG = <TMPL_VAR NAME='trans_start_except'>
+			GTG = <TMPL_VAR NAME='trans_start_except'>
+			TTG = <TMPL_VAR NAME='trans_start_except'>
+		</EMISSION_STR_EXCEPTIONS>
+	</ITEM>
+	<ITEM>
+		from_state  = 26
+		to_state    = 7
+		probability = 1
+	</ITEM>
+	<ITEM>
+		from_state  = 2
+		to_state    = 27
+		probability = <TMPL_VAR NAME='trans_cod_ovlp'>
+		<EMISSION_STR_EXCEPTIONS>
+			ATG = <TMPL_VAR NAME='trans_start_except'>
+			GTG = <TMPL_VAR NAME='trans_start_except'>
+			TTG = <TMPL_VAR NAME='trans_start_except'>
+		</EMISSION_STR_EXCEPTIONS>
+	</ITEM>
+	<ITEM>
+		from_state  = 27
+		to_state    = 8
+		probability = 1
+	</ITEM>
+	<ITEM>
+		from_state  = 2
+		to_state    = 19
+		probability = <TMPL_VAR NAME='trans_cod_nc'>
+		<EMISSION_STR_EXCEPTIONS>
+			TAA = 1
+			TAG = 1
+			TGA = 1
+		</EMISSION_STR_EXCEPTIONS>
+	</ITEM>
+	<ITEM>
+		from_state  = 19
+		to_state    = 21
+		probability = 1
+	</ITEM>
+	# To deadend state
+	<ITEM>
+		from_state  = 2
+		to_state    = 28
+		probability = <TMPL_VAR NAME='trans_cod_deadend'>
+	</ITEM>
+
+
+	# Transitions from state 3: 0+1
+	<ITEM>
+		from_state  = 3
+		to_state    = 3
+		probability = <TMPL_VAR NAME='trans_ovlp_ovlp'>
+	</ITEM>
+	<ITEM>
+		from_state  = 3
+		to_state    = 9
+		probability = <TMPL_VAR NAME='trans_ovlp_stop'>
+		<EMISSION_STR_EXCEPTIONS>
+			TAA = 1
+			TAG = 1
+			TGA = 1
+		</EMISSION_STR_EXCEPTIONS>
+	</ITEM>
+	<ITEM>
+		from_state  = 9
+		to_state    = 1
+		probability = 1
+	</ITEM>
+
+	# Transitions from state 4: 0+2
+	<ITEM>
+		from_state  = 4
+		to_state    = 4
+		probability = <TMPL_VAR NAME='trans_ovlp_ovlp'>
+	</ITEM>
+	<ITEM>
+		from_state  = 4
+		to_state    = 10
+		probability = <TMPL_VAR NAME='trans_ovlp_stop'>
+		<EMISSION_STR_EXCEPTIONS>
+			TAA = 1
+			TAG = 1
+			TGA = 1
+		</EMISSION_STR_EXCEPTIONS>
+	</ITEM>
+	<ITEM>
+		from_state  = 10
+		to_state    = 2
+		probability = 1
+	</ITEM>
+
+	# Transitions from state 5: 1+1
+	<ITEM>
+		from_state  = 5
+		to_state    = 5
+		probability = <TMPL_VAR NAME='trans_ovlp_ovlp'>
+	</ITEM>
+	<ITEM>
+		from_state  = 5
+		to_state    = 11
+		probability = <TMPL_VAR NAME='trans_ovlp_stop'>
+		<EMISSION_STR_EXCEPTIONS>
+			TAA = 1
+			TAG = 1
+			TGA = 1
+		</EMISSION_STR_EXCEPTIONS>
+	</ITEM>
+	<ITEM>
+		from_state  = 11
+		to_state    = 2
+		probability = 1
+	</ITEM>
+
+	# Transitions from state 6: 1+2
+	<ITEM>
+		from_state  = 6
+		to_state    = 6
+		probability = <TMPL_VAR NAME='trans_ovlp_ovlp'>
+	</ITEM>
+	<ITEM>
+		from_state  = 6
+		to_state    = 12
+		probability = <TMPL_VAR NAME='trans_ovlp_stop'>
+		<EMISSION_STR_EXCEPTIONS>
+			TAA = 1
+			TAG = 1
+			TGA = 1
+		</EMISSION_STR_EXCEPTIONS>
+	</ITEM>
+	<ITEM>
+		from_state  = 12
+		to_state    = 0
+		probability = 1
+	</ITEM>
+
+	# Transitions from state 7: 2+1
+	<ITEM>
+		from_state  = 7
+		to_state    = 7
+		probability = <TMPL_VAR NAME='trans_ovlp_ovlp'>
+	</ITEM>
+	<ITEM>
+		from_state  = 7
+		to_state    = 13
+		probability = <TMPL_VAR NAME='trans_ovlp_stop'>
+		<EMISSION_STR_EXCEPTIONS>
+			TAA = 1
+			TAG = 1
+			TGA = 1
+		</EMISSION_STR_EXCEPTIONS>
+	</ITEM>
+	<ITEM>
+		from_state  = 13
+		to_state    = 0
+		probability = 1
+	</ITEM>
+
+	# Transitions from state 8: 2+2
+	<ITEM>
+		from_state  = 8
+		to_state    = 8
+		probability = <TMPL_VAR NAME='trans_ovlp_ovlp'>
+	</ITEM>
+	<ITEM>
+		from_state  = 8
+		to_state    = 14
+		probability = <TMPL_VAR NAME='trans_ovlp_stop'>
+		<EMISSION_STR_EXCEPTIONS>
+			TAA = 1
+			TAG = 1
+			TGA = 1
+		</EMISSION_STR_EXCEPTIONS>
+	</ITEM>
+	<ITEM>
+		from_state  = 14
+		to_state    = 1
+		probability = 1
+	</ITEM>
+
+	# Transitions from state 21: N/C
+	<ITEM>
+		from_state  = 21
+		to_state    = 21
+		probability = <TMPL_VAR NAME='trans_nc_nc'>
+	</ITEM>
+	<ITEM>
+		from_state  = 21
+		to_state    = 16
+		probability = <TMPL_VAR NAME='trans_nc_cod'>
+		<EMISSION_STR_EXCEPTIONS>
+			ATG = <TMPL_VAR NAME='trans_start_except'>
+			GTG = <TMPL_VAR NAME='trans_start_except'>
+			TTG = <TMPL_VAR NAME='trans_start_except'>
+		</EMISSION_STR_EXCEPTIONS>
+	</ITEM>
+	<ITEM>
+		from_state  = 16
+		to_state    = 0
+		probability = 1
+	</ITEM>
+	<ITEM>
+		from_state  = 21
+		to_state    = 18
+		probability = <TMPL_VAR NAME='trans_nc_cod'>
+		<EMISSION_STR_EXCEPTIONS>
+			ATG = <TMPL_VAR NAME='trans_start_except'>
+			GTG = <TMPL_VAR NAME='trans_start_except'>
+			TTG = <TMPL_VAR NAME='trans_start_except'>
+		</EMISSION_STR_EXCEPTIONS>
+	</ITEM>
+	<ITEM>
+		from_state  = 18
+		to_state    = 1
+		probability = 1
+	</ITEM>
+	<ITEM>
+		from_state  = 21
+		to_state    = 20
+		probability = <TMPL_VAR NAME='trans_nc_cod'>
+		<EMISSION_STR_EXCEPTIONS>
+			ATG = <TMPL_VAR NAME='trans_start_except'>
+			GTG = <TMPL_VAR NAME='trans_start_except'>
+			TTG = <TMPL_VAR NAME='trans_start_except'>
+		</EMISSION_STR_EXCEPTIONS>
+	</ITEM>
+	<ITEM>
+		from_state  = 20
+		to_state    = 2
+		probability = 1
+	</ITEM>
+
+	# Deadend state can go to itself only
+	<ITEM>
+		from_state  = 28
+		to_state    = 28
+		probability = 1
+	</ITEM>
+</TRANSITION_LIST>
+

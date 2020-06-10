@@ -1,0 +1,123 @@
+####
+# 
+# Author: Ivan Antonov (ivan.antonov@gatech.edu)
+# 
+####
+# 
+# This is the hmm_def file. It contains the definition of a HMM model for FSMark program.
+# See http://topaz.gatech.edu/FSMark/???XXX??? for detailed information about the format.
+# 
+
+<FILE_INFO>
+	version = 0.01
+	svn_str = $Id$
+</FILE_INFO>
+
+<HMM_MODEL>
+	name  = Zero order HMM
+	descr = Is used in FSMark testing
+</HMM_MODEL>
+
+<EMISSION_LIST>
+	<ITEM>
+		id   = 0
+		name = 0
+		<PROBABILITIES>
+			A = 0.24603
+			C = 0.24798
+			G = 0.35599
+			T = 0.15000
+		</PROBABILITIES>
+	</ITEM>
+	<ITEM>
+		id   = 1
+		name = 1
+		<PROBABILITIES>
+			A = 0.28653
+			C = 0.22935
+			G = 0.18267
+			T = 0.30145
+		</PROBABILITIES>
+	</ITEM>
+	<ITEM>
+		id   = 2
+		name = 2
+		<PROBABILITIES>
+			A = 0.17096
+			C = 0.27641
+			G = 0.29747
+			T = 0.25516
+		</PROBABILITIES>
+	</ITEM>
+</EMISSION_LIST>
+
+<STATE_LIST>
+	<ITEM>
+		id           = 0
+		name         = 0
+		periodicity  = 3
+		emission_set = 0, 1, 2
+	</ITEM>
+	<ITEM>
+		id           = 1
+		name         = 1
+		periodicity  = 3
+		emission_set = 2, 0, 1
+	</ITEM>
+	<ITEM>
+		id           = 2
+		name         = 2
+		periodicity  = 3
+		emission_set = 1, 2, 0
+	</ITEM>
+</STATE_LIST>
+
+<TRANSITION_LIST>
+	<ITEM>
+		from_state  = 0
+		to_state    = 0
+		probability = 0.9
+	</ITEM>
+	<ITEM>
+		from_state  = 0
+		to_state    = 1
+		probability = 0.05
+	</ITEM>
+	
+	<ITEM>
+		from_state  = 0
+		to_state    = 2
+		probability = 0.05
+	</ITEM>
+	<ITEM>
+		from_state  = 1
+		to_state    = 0
+		probability = 0.05
+	</ITEM>
+	<ITEM>
+		from_state  = 1
+		to_state    = 1
+		probability = 0.9
+	</ITEM>
+	<ITEM>
+		from_state  = 1
+		to_state    = 2
+		probability = 0.05
+	</ITEM>
+	
+	<ITEM>
+		from_state  = 2
+		to_state    = 0
+		probability = 0.05
+	</ITEM>
+	<ITEM>
+		from_state  = 2
+		to_state    = 1
+		probability = 0.05
+	</ITEM>
+	<ITEM>
+		from_state  = 2
+		to_state    = 2
+		probability = 0.9
+	</ITEM>
+</TRANSITION_LIST>
