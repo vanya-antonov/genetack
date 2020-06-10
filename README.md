@@ -14,15 +14,22 @@
 * For convenience you can copy the distribution folder to a desired location and add it to your $PATH
 
 # Examples
-* GeneTack test run: ./genetack -m examples/model.hmm_def -f examples/fragment.fasta
-* GeneTack-GM test run (takes ~ 3 min): ./genetack_gm.pl examples/genome_1Mb.fasta
+* GeneTack test run:
+```
+./genetack -m examples/model.hmm_def -f examples/fragment.fasta
+```
+* GeneTack-GM test run (takes ~ 3 min):
+```
+./genetack_gm.pl examples/genome_1Mb.fasta
+```
+
 * mod2hmmdef.pl test run:
     - Firt, run GeneMarkS to produce a model file that is called "GeneMark_hmm.mod" by default:
-      gmsn.pl --clean examples/genome_1Mb.fasta
+    `gmsn.pl --clean examples/genome_1Mb.fasta`
     - Next, convert the generated "GeneMark_hmm.mod" file into "GeneMark_hmm.hmm_def" using a template file:
-      ./mod2hmmdef.pl GeneMark_hmm.mod hmm_def_files/genetack_gm.hmm_def GeneMark_hmm.hmm_def
+      `./mod2hmmdef.pl GeneMark_hmm.mod hmm_def_files/genetack_gm.hmm_def GeneMark_hmm.hmm_def`
     - Finally, the produced "GeneMark_hmm.hmm_def" model can be used to run GeneTack:
-      ./genetack -m GeneMark_hmm.hmm_def -f examples/fragment.fasta
+      `./genetack -m GeneMark_hmm.hmm_def -f examples/fragment.fasta`
 
 The distribution includes 3 tools:
 
