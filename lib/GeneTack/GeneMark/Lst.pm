@@ -375,6 +375,21 @@ sub get_all_genes
 	return dclone($self->{genes});
 }
 
+sub get_all_genes_zero_based
+{
+	my $self = shift;
+
+	my @genes = ();
+	for my $g ( @{$self->{genes}} )
+	{
+		my %h = %$g;
+		$h{left}--;
+		push(@genes, \%h);
+	}
+
+	return \@genes;
+}
+
 sub get_gene
 {
 	my $self = shift;

@@ -139,7 +139,7 @@ void output_table(Sequence &seq, Hmm &hmm, Path &path, const string out_fn)
 	
 	out_table << fixed;   // Not scientific in form 1e+6
 	
-	out_table << "Position\tLetter\tState Name\tEmission name\tBest_score";
+	out_table << "Position\tLetter\tState\tEmission\tBest_score";
 	for(state_i = 0; state_i < hmm.get_num_states(); ++state_i)
 	{
 		name = hmm.get_state_name( state_i );

@@ -151,6 +151,7 @@ sub _find_fs
 				'from_state'           => $self->{tbl}[$i]{state},
 				'to_state'             => $self->{tbl}[$i+1]{state},
 				'pos'                  => $i,
+				pos_adj                => $self->_adjust_fs_coord($i),
 				type                   => $FS_TYPES{$self->{tbl}[$i]{state}.$self->{tbl}[$i+1]{state}},
 				left_cod_shoulder_len  => $self->_get_left_shoulder_len( $i ),
 				right_cod_shoulder_len => $self->_get_right_shoulder_len( $i ),
@@ -159,6 +160,32 @@ sub _find_fs
 			};
 		}
 	}
+}
+
+###
+# Update (move upstream) the given fs-coord so that it is located
+# at the end of the codon in the original frame (i.e. the position
+# BEFORE the adjusted coord has Emission '2_wo_stop').
+# The fs_coord and coord_adj are 0-based.
+#
+sub _adjust_fs_coord
+{
+	my $self = shift;
+	my($coord) = @_;
+
+	my $coord_adj = $coord;
+	while($self->{tbl}[$coord_adj-1]{emiss_name} ne '2_wo_stop')
+	{
+		$coord_adj--;
+		if(abs($coord - $coord_adj) > 3)
+		{
+			# To avoid infinite loops
+			warn "Can't adjust the fs_coord = $coord!!!";
+			return $coord;
+		}
+	}
+	
+	return $coord_adj;
 }
 
 sub _get_left_gene_nc_shoulder_len

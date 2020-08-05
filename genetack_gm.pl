@@ -224,12 +224,12 @@ sub output
 	
 	@$data = sort { $a->{left} <=> $b->{left} } @$data;
 	
-	my $tmpl = "%-6s\t%-15s\t%-7s\t%-6s\t%-15s\t%-15s\t%-15s\t%-15s";
+	my $tmpl = "%-6s\t%-15s\t%-15s\t%-7s\t%-6s\t%-15s\t%-15s\t%-15s\t%-15s";
 	$tmpl .= "\t%-12s\t%s\t%s\t%s\t%s" if $fs_scores;
 	$tmpl .= "\t%-15s" if $filtered_fs;
 	$tmpl .= "\n";
 	
-	my @head = qw(Num FS_coord FS_type Strand Gene_Left Gene_Right Fragment_Left Fragment_Right);
+	my @head = qw(Num FS_coord FS_coord_adj FS_type Strand Gene_Left Gene_Right Fragment_Left Fragment_Right);
 	push @head, qw(Gene_NC_Len FS_Path_Score Wo_FS_Path_score FS_Score LG_FS_Score) if $fs_scores;
 	push @head, 'Filter' if $filtered_fs;
 	printf($tmpl, @head);
@@ -239,7 +239,7 @@ sub output
 	{
 		foreach my $fs ( @{$d->{fs}} )
 		{
-			my @values = ($i, $fs->{_coord}, $fs->{type}, $d->{strand}, $fs->{_g_left}, $fs->{_g_right}, $d->{left}, $d->{right});
+			my @values = ($i, $fs->{_coord}, $fs->{_coord_adj}, $fs->{type}, $d->{strand}, $fs->{_g_left}, $fs->{_g_right}, $d->{left}, $d->{right});
 			push(@values, $fs->{gene_nc_len}, $fs->{fs_path_score}, $fs->{wo_fs_path_score}, $fs->{score}, $fs->{lg_fs_score}) if $fs_scores;
 			if( $filtered_fs )
 			{
@@ -573,11 +573,12 @@ sub _get_all_fs_from_fsmark_file
 		
 		foreach my $fs ( @{$fs_hash->{fs}} )   # Calculate absolute coordintate
 		{
-			my $g_start     = $fsm->get_gene_start_for_fs($fs->{'pos'});
-			my $g_end       = $fsm->get_gene_end_for_fs($fs->{'pos'});
-			$fs->{_coord}   = $item->{strand} eq '+' ? ($item->{left} + $fs->{'pos'}) : ($item->{right} - $fs->{'pos'});
-			$fs->{_g_left}  = $item->{strand} eq '+' ? ($item->{left} + $g_start)     : ($item->{right} - $g_end      );
-			$fs->{_g_right} = $item->{strand} eq '+' ? ($item->{left} + $g_end)       : ($item->{right} - $g_start    );
+			my $g_start       = $fsm->get_gene_start_for_fs($fs->{'pos'});
+			my $g_end         = $fsm->get_gene_end_for_fs($fs->{'pos'})+1;
+			$fs->{_coord}     = $item->{strand} eq '+' ? ($item->{left} + $fs->{'pos'})   : ($item->{right} - $fs->{'pos'});
+			$fs->{_coord_adj} = $item->{strand} eq '+' ? ($item->{left} + $fs->{pos_adj}) : ($item->{right} - $fs->{pos_adj});
+			$fs->{_g_left}    = $item->{strand} eq '+' ? ($item->{left} + $g_start)       : ($item->{right} - $g_end      );
+			$fs->{_g_right}   = $item->{strand} eq '+' ? ($item->{left} + $g_end)         : ($item->{right} - $g_start    );
 		}
 	}
 	
@@ -612,7 +613,7 @@ sub get_fsmark_todo
 {
 	my($lst, $seq, $high_gc) = @_;
 	
-	my @all_genes   = @{$lst->get_all_genes()};
+	my @all_genes   = @{$lst->get_all_genes_zero_based()};
 	modify_gene_strand(\@all_genes) if $high_gc;
 	my $all_contigs = get_contigs_info(\@all_genes);
 	
@@ -789,8 +790,8 @@ sub get_seq_chunk_with_marked_genes
 {
 	my($genome, $left, $right, $genes) = @_;
 	
-	my $seq_len = $right-$left+1;
-	my $seq     = uc substr($genome, $left-1, $seq_len);
+	my $seq_len = $right-$left;
+	my $seq     = uc substr($genome, $left, $seq_len);
 	
 	# Lower case shoulders
 	my $left_s_len = $genes->[0]{left} - $left;
@@ -839,7 +840,7 @@ sub calculate_shoulder_coords
 		$s_right = ($g->{right}+$shoulder_len) > $genome_len ? $genome_len : ($g->{right}+$shoulder_len);
 		$s_right = get_g_left_coord_in_region($all_genes, $g->{right}, $s_right); # Adjust shoulder coordinate wrt other genes in the shoulder
 		
-		$s_left  = ($g->{left}-$shoulder_len) <= 0 ? 1 : ($g->{left}-$shoulder_len);
+		$s_left  = ($g->{left}-$shoulder_len) <= 0 ? 0 : ($g->{left}-$shoulder_len);
 		$s_left  = get_g_right_coord_in_region($all_genes, $s_left, $g->{left});  # Adjust shoulder coordinate wrt other genes in the shoulder
 	}
 	elsif($g->{_group} eq 'down_shoulder')                  # Downstream shoulder only
@@ -855,7 +856,7 @@ sub calculate_shoulder_coords
 		{
 			$s_right = $g->{right};
 			
-			$s_left  = ($g->{left}-$shoulder_len) <= 0 ? 1 : ($g->{left}-$shoulder_len);
+			$s_left  = ($g->{left}-$shoulder_len) <= 0 ? 0 : ($g->{left}-$shoulder_len);
 			$s_left  = get_g_right_coord_in_region($all_genes, $s_left, $g->{left});  # Adjust shoulder coordinate wrt other genes in the shoulder
 		}
 	}
