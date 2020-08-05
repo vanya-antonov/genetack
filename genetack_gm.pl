@@ -3,8 +3,7 @@
 use strict;
 use warnings;
 
-my $SVN_STR = '$Id$';
-my $VERSION = '1.10';
+my $VERSION = '1.20';
 
 # $Id$
 
@@ -938,12 +937,9 @@ sub usage
 	my($msg) = @_;
 	$msg = $msg ? $msg."\n" : '';
 	
-	# $Id$
-	my($revision, $date) = $SVN_STR =~ /assa.*?\.pl\s+(\S+)\s+(\S+)/;
-	
 	my $script = File::Spec->splitpath($0);
 	return"$msg
-GeneTack-GM, version $VERSION, revision $revision ($date)
+GeneTack-GM, version $VERSION
 
 USAGE:
     $script   [OPTIONS]   <sequence.fasta>   >   <out.fsmarkgm>
