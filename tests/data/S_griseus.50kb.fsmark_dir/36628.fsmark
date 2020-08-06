@@ -1107,7 +1107,7 @@ Position	Letter	State	Emission
 1105	c	nc	nc
 1106	g	nc	nc
 1107	a	nc	nc
-1108	c	nc	nc
+1108	C	nc	nc
 1109	A	nc	nc
 1110	T	nc	nc
 1111	G	start_nc_2	start
@@ -2237,7 +2237,7 @@ Position	Letter	State	Emission
 2235	c	nc	nc
 2236	c	nc	nc
 2237	g	nc	nc
-2238	a	nc	nc
+2238	A	nc	nc
 2239	G	nc	nc
 2240	T	nc	nc
 2241	G	start_nc_1	start
@@ -3018,4 +3018,3 @@ Position	Letter	State	Emission
 3016	g	nc	nc
 3017	g	nc	nc
 3018	g	nc	nc
-3019	t	nc	nc

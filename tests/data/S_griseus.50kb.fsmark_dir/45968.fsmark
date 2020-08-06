@@ -1107,7 +1107,7 @@ Position	Letter	State	Emission
 1105	g	2	2_wo_stop
 1106	g	2	0
 1107	t	2	1
-1108	g	2	2_wo_stop
+1108	G	2	2_wo_stop
 1109	A	2	0
 1110	T	2	1
 1111	G	2	2_wo_stop
@@ -1699,7 +1699,7 @@ Position	Letter	State	Emission
 1697	C	0	2_wo_stop
 1698	C	0	0
 1699	C	0	1
-1700	G	0	2_wo_stop
+1700	g	0	2_wo_stop
 1701	g	0	0
 1702	t	0	1
 1703	g	0	2_wo_stop
@@ -2437,4 +2437,3 @@ Position	Letter	State	Emission
 2435	c	nc	nc
 2436	c	nc	nc
 2437	g	nc	nc
-2438	c	nc	nc

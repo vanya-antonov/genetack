@@ -2083,7 +2083,7 @@ Position	Letter	State	Emission
 2081	T	2	0
 2082	A	2	1
 2083	G	stop_2_nc	stop
-2084	a	nc	nc
+2084	A	nc	nc
 2085	a	nc	nc
 2086	a	nc	nc
 2087	a	nc	nc
@@ -3333,4 +3333,3 @@ Position	Letter	State	Emission
 3331	g	nc	nc
 3332	g	nc	nc
 3333	a	nc	nc
-3334	t	nc	nc
