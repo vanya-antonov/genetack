@@ -82,10 +82,9 @@ def test_fs_coord_after_codon():
     # https://stackoverflow.com/a/22605281/310453
     # https://stackoverflow.com/a/31324373/310453
     all_fs_df = pd.read_csv(gtgm_fn, sep='\s+')
-    print(all_fs_df)
 
     _validate_single_fs_genes(all_fs_df, seq)
-    """
+
     for index, fs in all_fs_df.iterrows():
         fsmark_fn = os.path.join(fsmark_dir, str(fs.Fragment_Left) + '.fsmark')
 
@@ -93,9 +92,6 @@ def test_fs_coord_after_codon():
         assert os.path.exists(fsmark_fn)
 
         _validate_fshift(fs, fsmark_fn)
-        # assert 0
-        return
-    """
 
 def _validate_single_fs_genes(all_fs_df, seq):
     # Remove genes with >1 fs
@@ -107,12 +103,10 @@ def _validate_single_fs_genes(all_fs_df, seq):
         # Need to compute num_upstream_codons because gene border
         # doesn't correspond to end of the start codon
         if fs.Strand == '+':
-            fs.FS_coord_adj = fs.FS_coord_adj -1 
             num_upstream_codons = int((fs.FS_coord_adj - fs.Gene_Left) / 3)
             coord_1 = fs.FS_coord_adj - 3*num_upstream_codons
             coord_2 = fs.FS_coord_adj
         else:
-            fs.FS_coord_adj = fs.FS_coord_adj + 1 
             num_upstream_codons = int((fs.Gene_Right - fs.FS_coord_adj) / 3)
             coord_1 = fs.FS_coord_adj
             coord_2 = fs.FS_coord_adj + 3*num_upstream_codons
@@ -123,30 +117,22 @@ def _validate_single_fs_genes(all_fs_df, seq):
         upstream_nt = seq[coord_1:coord_2]
         if fs.Strand == '-':
             upstream_nt = upstream_nt.reverse_complement()
-        
-        print("\n==========\n\n")
-        print(fs)
-        print(str(upstream_nt))
 
+        # Make sure there is no stop-codons
         upstream_aa = upstream_nt.translate()
         assert('*' not in upstream_aa)
 
 
 def _validate_fshift(fs, fsmark_fn):
     fsmark_df = pd.read_csv(fsmark_fn, sep='\t')
-    coord_in_fragment = fs.FS_coord - fs.Fragment_Left
-    print(fsmark_df)
-    pprint(fs)
-    print(coord_in_fragment)
+    if fs.Strand == '+':
+        coord_in_fragment = fs.FS_coord_adj - fs.Fragment_Left
+    else:
+        coord_in_fragment = fs.Fragment_Right - fs.FS_coord_adj
     # state:  0 1 2 0 1 2
     #         A T G T T C
     #        | | | | | | |
     #        0 1 2 3 4 5 6
     # Correct fs-coord is 3 because the letter before it has the last codon position
-    
-    # Strand = +; fs_len = -1
     assert fsmark_df.iloc[coord_in_fragment-1].Emission == '2_wo_stop'
-    # self.assertTrue(0 <= pvalue <= 1)
-    # Make sure the function returns -1 for unsupported params
-    # self.assertEqual(compute_pvalue(rna_len, dna_len, num_tpx, ''), -1)
 
