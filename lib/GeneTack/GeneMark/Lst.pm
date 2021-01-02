@@ -78,20 +78,20 @@ my %OPT_COLS = (
 sub new
 {
 	my $class = shift;
-	my($fn, %opts) = @_;
-	
+	my($fn, $refID, %opts) = @_;
+
 	my $self = bless {
 		genes    => [],
 		overlaps => [],
 	}, $class;
-	
-	$self->_init($fn);
-	
+
+	$self->_init( $fn, $refID );
+
 	# add $self->{genes}->[i]->{cod_p} (coding potential) to each gene
 	$self->_calculate_coding_potential($opts{gdata_fn}) if $opts{gdata_fn};
-	
-	$self->SUPER::_init(init_fn => $fn);
-	
+
+	$self->SUPER::_init( init_fn => $fn ); # GeneTack::GeneMark::_init
+
 	return $self;
 }
 
@@ -116,10 +116,10 @@ sub _calculate_coding_potential
 			if( $val->{seq_i} > $gene->{right} )   # No reason to look further
 			{
 				$last_left_i = $val->{i} - 10; # -10 back in case of gene overlap
-				last; 
+				last;
 			}
 		}
-		
+
 		foreach my $frame ( qw(f1 f2 f3 f4 f5 f6) )
 		{
 			$gene->{cod_p}{$frame} = @cod_vals == 0 ? 0 : aver( map { $_->{$frame} } @cod_vals);
@@ -159,9 +159,9 @@ sub _read_gdata_fn
 sub _init
 {
 	my $self = shift;
-	my($fn) = @_;
-	
-	$self->_read_fn($fn);
+	my( $fn, $refID ) = @_;
+
+	$self->_read_fn( $fn, $refID );
 	$self->_calculate_frames();
 	$self->_find_overlaps_in_strand('+');
 	$self->_find_overlaps_in_strand('-');
@@ -238,54 +238,88 @@ sub _find_overlaps_in_strand
 	}
 }
 
+
 sub _read_fn
 {
 	my $self = shift;
-	my($fn) = @_;
-	
+	my( $fn, $refID ) = @_;	# MODEL.lst file, and sequence ID
+
+	my @opt_keys;
+	my( $i, $flg ) = (0, 0);
+
 	open(my $fh, '<', $fn) or die "Can't open file '$fn': $!";
-	
 	# Skip lines until 'Predicted genes'
-	while(<$fh>){ /^Predicted genes/ and last };
-	confess("Someting wrong: I see '$_' but expect 'Predicted genes' here") if $_ !~ /^Predicted genes/;
-	
-	my $head = <$fh>;
-	my ($opt_head) = $head =~ /\s+Class\s*(\S*.*\S*)\s*$/;
-	my @opt_keys = ();
-	foreach my $name ( split /\s+/, $opt_head )    # From optional column names to keys
-	{
-		confess("File '$fn' has unknown optional column '$name'") if !exists $OPT_COLS{$name};
-		push @opt_keys, $OPT_COLS{$name}{key};
-	}
-	
-	$_ = <$fh>;
-	
-	while( <$fh> )
-	{
-		next if /^\s+$/;
+	while(<$fh>){
+=comment
+...
+ FASTA definition line: NZ_KI535340.1 Abiotrophia defectiva ATCC 49176 Scfld0, whole genome shotgun sequence
+Predicted genes
+   Gene    Strand    LeftEnd    RightEnd       Gene     Class   Spacer     RBS
+    #                                         Length            Length    score
+    1        -          46         834          789        1        7   3.3786
+=cut
+		if( /FASTA\s+definition\s+line:\s+(\S+)/i ){
+
+			if( $refID eq $1 ){
+				$flg = 1;
+			}elsif( $flg > 1 ){
+				last;
+			}else{
+				$flg = 0;
+			}
+			next;
+		}
+
+		if( $flg == 1 and /^Predicted\s+genes/i ){ # and last;
+
+#   Gene    Strand    LeftEnd    RightEnd       Gene     Class   Spacer     RBS
+			my $head = <$fh>;
+
+			@opt_keys = ();
+
+			for my $name ( $head =~ /\s+Class\s+(\S+)\s+(\S+)\s*$/i ) # From optional column names to keys: Spacer     RBS
+			{
+				confess("File '$fn' has unknown optional column '$name'") if !exists $OPT_COLS{ $name };
+				push @opt_keys, $OPT_COLS{ $name }{'key'};
+			}
+			confess("File '$fn' does NOT have optional columns") unless @opt_keys;
+
+			++$flg;
+			next;
+		}
+		next if $flg < 2;
+
+		next if /^\s+$/ || /^\s*#/; # Skip line: #                                         Length            Length    score
 		s/^\s+//;
+=comment
+1439        +          <3         151          150        1       -1   0.0333
+1591        -      178725     >179279          555        1       13  -1.6296
+=cut
 		my @vals = split /\s+/;
 		confess("File '$fn' has wrong format: ".Data::Dumper->Dump([\@vals], ['vals'])) if @vals != 6+@opt_keys;
-		
-		# Substitute coordinates: '<3' => '3'
-		$vals[2] =~ s/[<>]//g;
-		$vals[3] =~ s/[<>]//g;
-		
+
+		# Substitute coordinates: '<3' --> '3' and >179279 --> 179279
+		$vals[$_] =~ s/<|>//g for 2, 3;
+
 		my %opt_vals = map { $opt_keys[$_] => $vals[6+$_] } 0 .. $#opt_keys;
-		push @{$self->{genes}}, {
-			id      => $vals[0],
+		push @{ $self->{'genes'} }, {
+			id      => ++$i,
+			gmID    => $vals[0], # geneMark ID
 			strand  => $vals[1],
 			left    => $vals[2],
 			right   => $vals[3],
 			len     => $vals[4],
 			class   => $vals[5],
 			overlap => 0,
+#			refID   => $refID,
 			%opt_vals,
 		};
-	}
-	
+	};
 	close $fh;
+
+	confess("File '$fn' does NOT have Predicted genes") unless $i;
 }
+
 
 ###
 # Description:

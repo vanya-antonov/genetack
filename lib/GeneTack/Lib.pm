@@ -99,31 +99,36 @@ sub create_tmp_dir
 #
 sub read_fasta
 {
-	my($fn) = @_;
-	
+	my( $fn ) = @_;
+	my( $refID, %Seqs );
+
 	open(F, '<', $fn) or die "Can't open file '$fn'";
-	
-	my $head = <F>;
-	die("Wrong header in fasta file '$fn': $head") if $head !~ /^>/;
-	
-	my $seq = '';
 	while( <F> )
 	{
-		s/[\n\r]//g;
-		$seq .= $_;
+		if( /^>(\S+)/ ){
+			$refID = $1;
+			next;
+
+		}elsif( $refID ){
+			s/\s+//g;
+			next if /^$/;
+
+			$Seqs{ $refID } .= $_;
+		}
 	}
-	
+
 	close F;
-	
-	return $seq;
+
+	return ( $refID && scalar( keys %Seqs )) ? \%Seqs : undef;
 }
 
 
+# INPUT: \$seq --- ref to nucleotide sequence
 sub get_gc_content
 {
-	my($seq) = @_;
-	my $num_gc = $seq =~ tr/GCgc/GCgc/;
-	return $num_gc/length($seq);
+	my( $seq ) = @_;
+	my $num_gc = $$seq =~ tr/GCgc/GCgc/;
+	return $num_gc / length( $$seq );
 }
 
 #################################
