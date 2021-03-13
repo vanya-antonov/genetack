@@ -396,7 +396,7 @@ sub get_adj_gap_seq
 		warn "Something is wrong with seq = '$gap_seq': ".Data::Dumper->Dump([$adj], ['$adj']);
 		return undef;
 	}
-	
+
 	return $gap_seq;
 }
 
@@ -799,7 +799,7 @@ sub save_seqs_info
 sub get_seq_chunk_with_marked_genes
 {
 	my($genome, $left, $right, $genes) = @_;
-	
+
 	my $seq_len = $right - $left;
 	my $seq     = uc substr($genome, $left, $seq_len);
 
@@ -879,11 +879,11 @@ sub calculate_shoulder_coords
 	{
 		die "calculate_shoulder_coords: unknown group: '$g->{_group}'";
 	}
-	
+
 	# Final adjustment of coordinates
 	$s_left  = $g->{left}  if $g->{left}  < $s_left;
 	$s_right = $g->{right} if $g->{right} > $s_right;
-	
+
 	return($s_left, $s_right);
 }
 
@@ -892,7 +892,7 @@ sub calculate_shoulder_coords
 sub get_g_right_coord_in_region
 {
 	my($all_genes, $reg_left, $reg_right) = @_;
-	
+
 	my $g_right_coord = undef;
 	foreach my $g ( @$all_genes )
 	{
@@ -907,7 +907,7 @@ sub get_g_right_coord_in_region
 			last;
 		}
 	}
-	
+
 	return $g_right_coord || $reg_left;
 }
 
@@ -916,7 +916,7 @@ sub get_g_right_coord_in_region
 sub get_g_left_coord_in_region
 {
 	my($all_genes, $reg_left, $reg_right) = @_;
-	
+
 	my $g_left_coord = undef;
 	foreach my $g ( @$all_genes )
 	{
@@ -931,7 +931,7 @@ sub get_g_left_coord_in_region
 			last;
 		}
 	}
-	
+
 	return $g_left_coord || $reg_right;
 }
 
@@ -947,7 +947,7 @@ sub usage
 {
 	my($msg) = @_;
 	$msg = $msg ? $msg."\n" : '';
-	
+
 	my $script = File::Spec->splitpath($0);
 	return"$msg
 GeneTack-GM, version $VERSION
@@ -967,7 +967,7 @@ OPTIONS:
     --save_fs_mod         <FILE.mod>    --  save model that was used to generate the .hmm_def file
     --save_fsmark_files   <DIR>         --  save FSMark output files in the directory. Name of a file is 
                                             the left coordinate of contig.
-    
+
     --fs_prob             <NUM>         --  probability of a frameshift -- probability of direct transition from one 
                                             coding state to another. Default value is $FS_PROB
     --gm_order            <NUM>         --  order to run GeneMark and predict genes in genome. Default value is $GM_ORDER
