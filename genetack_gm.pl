@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-my $VERSION = '1.20';
+my $VERSION = '1.30';
 
 # $Id$
 
