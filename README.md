@@ -24,6 +24,12 @@
 ./genetack_gm.pl examples/genome_1Mb.fasta
 ```
 
+* GeneTack-GM extensive test run (takes ~5 min):
+```
+cd tests
+./test_genetack_gm.pl
+```
+
 * mod2hmmdef.pl test run:
     - Firt, run GeneMarkS to produce a model file that is called "GeneMark_hmm.mod" by default:
     `gmsn.pl --clean examples/genome_1Mb.fasta`
