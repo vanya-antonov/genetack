@@ -11,7 +11,7 @@ my $VERSION = '1.30';
 # Ivan Antonov (vanya.antonov@gmail.com)
 #
 
-$| = 1; # Turn off buffering
+$|++; # Turn off buffering
 
 use FindBin;
 use lib "$FindBin::Bin/lib";
@@ -40,31 +40,31 @@ use GeneTack::GeneMark::Mod;
 # to set default value to 10-4 (see meeting log on September 18, 2008)."
 my $NUM_THREADS         = 1;
 my $FS_PROB             = 0.0006;
-my $TSE                 = 0.0001;     # TRANS_START_EXCEPT -- Based of optimization done on April 21, 2009
-my $TSE_HIGH_GC         = 0.001;      # TRANS_START_EXCEPT for high GC content genomes
-my $COD_ORDER           = 3;          # Default value for --cod_order option
-my $GM_ORDER            = 5;          # Default value for --gm_order option
-my $GM_CDEC             = 300;        # Default value for --gm_cdec option
-my $SAVE_SEQS           = '';         # Default value for --save_seqs option
-my $SAVE_FILTER_REGS    = '';
-my $SAVE_SEQS_INFO      = '';         # Default value for --save_seqs_info option
-my $SAVE_FSGENE_SEQS    = '';         # Default value for --save_fsgene_seqs option
-my $SAVE_FSPROT_SEQS    = '';         # Default value for --save_fsprot_seqs option
+my $TSE                 = 0.0001; # TRANS_START_EXCEPT -- Based of optimization done on April 21, 2009
+my $TSE_HIGH_GC         = 0.001;  # TRANS_START_EXCEPT for high GC content genomes
+my $COD_ORDER           = 3;      # Default value for --cod_order option
+my $GM_ORDER            = 5;      # Default value for --gm_order option
+my $GM_CDEC             = 300;    # Default value for --gm_cdec option
+my $SAVE_SEQS;          # Default value for --save_seqs option
+my $SAVE_FILTER_REGS;
+my $SAVE_SEQS_INFO;     # Default value for --save_seqs_info option
+my $SAVE_FSGENE_SEQS;   # Default value for --save_fsgene_seqs option
+my $SAVE_FSPROT_SEQS;   # Default value for --save_fsprot_seqs option
 my $SAVE_GM_MOD         = '';
 my $SAVE_FS_MOD         = '';
-my $FS_COD_SHOULDER_LEN = 50;         # Default value for --fs_cod_shoulder_len option
-my $MIN_OVERLAP_LEN     = 8;          # Default value for --min_overlap_len option
-my $MIN_ADJ_LEN         = 1;          # Default value for --min_adj_len option
-my $MAX_OVERLAP_RBS     = 2;          # Default value for --max_overlap_rbs option
-my $MIN_LG_FS_SCORE     = -4.5;       # Default value for --min_lg_fs_score option
-my $OUTPUT_FILTERED_FS  = 0;          # Default value for --output_filtered_fs option
-my $IGNORE_VICINITY     = 50;         # Default value for --ignore_vicinity option
-my $MAX_ADJACENT_GAP    = 100;        # Default value for --max_adjacent_gap option
-my $MAX_ADJACENT_RBS    = 1;          # Default value for --max_adjacent_rbs option
-my $ADJ_STOP_EXTRA_LEN  = 20;         # Default value for --adj_stop_extra_len option 
-my $SAVE_FSMARK_FILES   = '';         # Default value for --save_fsmark_files option
-my $CALC_FS_SCORES      = 0;          # Default value for --calc_fs_scores option
-my $HIGH_GC_THR         = 0.65;       # Threshold for high GC content genomes
+my $FS_COD_SHOULDER_LEN = 50;     # Default value for --fs_cod_shoulder_len option
+my $MIN_OVERLAP_LEN     = 8;      # Default value for --min_overlap_len option
+my $MIN_ADJ_LEN         = 1;      # Default value for --min_adj_len option
+my $MAX_OVERLAP_RBS     = 2;      # Default value for --max_overlap_rbs option
+my $MIN_LG_FS_SCORE     = -4.5;   # Default value for --min_lg_fs_score option
+my $OUTPUT_FILTERED_FS  = 0;      # Default value for --output_filtered_fs option
+my $IGNORE_VICINITY     = 50;     # Default value for --ignore_vicinity option
+my $MAX_ADJACENT_GAP    = 100;    # Default value for --max_adjacent_gap option
+my $MAX_ADJACENT_RBS    = 1;      # Default value for --max_adjacent_rbs option
+my $ADJ_STOP_EXTRA_LEN  = 20;     # Default value for --adj_stop_extra_len option 
+my $SAVE_FSMARK_FILES   = '';     # Default value for --save_fsmark_files option
+my $CALC_FS_SCORES      = 0;      # Default value for --calc_fs_scores option
+my $HIGH_GC_THR         = 0.65;   # Threshold for high GC content genomes
 my $GM_MOD_FN           = '';
 my $FS_MOD_FN           = '';
 my $TMP_DIR             = '.';
@@ -107,7 +107,7 @@ die usage("Value of --cod_order $COD_ORDER is not supported") if !exists $GeneTa
 ###
 my $START_TIME = time;
 
-run(
+&run(
 	seq_fn             => $ARGV[0],
 	num_threads        => $NUM_THREADS,
 	fs_prob            => $FS_PROB,
@@ -146,7 +146,8 @@ run(
 	},
 );
 
-warn "\nElapsed time: ".(time-$START_TIME)." sec\n";
+warn "\nElapsed time: ".(time - $START_TIME)." sec\n";
+exit;
 ###
 
 ###
@@ -158,12 +159,12 @@ sub run
 	$opts{tmp_dir} = create_tmp_dir(root_dir => $opts{tmp_root}, prefix => '__genetack_');
 
 	# Copy genome to the tmp dir, so that all the files will be created inside the same folder
-	copy($opts{seq_fn}, "$opts{tmp_dir}/$opts{fn_body}.fasta");
+	copy( $opts{seq_fn}, "$opts{tmp_dir}/$opts{fn_body}.fasta");
 	$opts{seq_fn} = abs_path("$opts{tmp_dir}/$opts{fn_body}.fasta");
 
 	# Read genome sequence and determine whether it is high GC genome
-	my $Seqs     = read_fasta( $opts{seq_fn} );
-	my $totSeq = join '', values %{ $Seqs };
+	my $Seqs    = read_fasta( $opts{seq_fn} );
+	my $totSeq  = join '', values %{ $Seqs };
 	my $high_gc = get_gc_content( \$totSeq ) > $opts{high_gc_thr} ? 1 : 0;	#???
 
 	# Run GeneMark. Create .gdata file for the high GC genomes only.
@@ -177,32 +178,34 @@ sub run
 
 	my $tse_prob = $high_gc ? $opts{tse_high_gc} : $opts{tse};
 
-	my $ifs = 1; # FrameShift id
+	my $ifs; # FShift ID
 
-	for my $refID ( keys %{ $Seqs } )
+	for my $refID ( sort keys %{ $Seqs } )
 	{
 		my $seq = $Seqs->{ $refID };
 
 		# Prepare TODO for FSMark -- genome chunks which will be used as input to run FSMark
-		my $lst  = GeneTack::GeneMark::Lst->new($lst_fn, $refID, gdata_fn => $gdata_fn);
-		my $todo = get_fsmark_todo( $lst, $seq, defined( $gdata_fn ));
-		my $res  = run_fsmark($todo, $seq, $opts{hmmdef_tmpl}, $fs_mod_fn, $opts{fn_body}, $opts{fs_prob}, $tse_prob, %opts);
+		my $lst  = GeneTack::GeneMark::Lst->new( $lst_fn, $refID, gdata_fn => $gdata_fn );
+		my $todo = &get_fsmark_todo( $lst, $seq, defined( $gdata_fn ) );
+		my $res  = &run_fsmark( $todo, $seq, $opts{hmmdef_tmpl}, $fs_mod_fn, $opts{fn_body}, $opts{fs_prob}, $tse_prob, %opts );
 
-		my $all_filters = apply_filters($lst, $seq, $res, $opts{filter_params}, $opts{ignore_vicinity});
+		my $all_filters = &apply_filters( $lst, $seq, $res, $opts{filter_params}, $opts{ignore_vicinity} );
 
-		# Output
-		output($res, $opts{output_filtered_fs}, $opts{calc_fs_scores}, $refID, \$ifs);
+		++$opts{nSq}; # number of Sequences
 
-		save_seqs($todo, $opts{save_seqs})                                 if $opts{save_seqs};
-		save_seqs_info($todo, $opts{save_seqs_info})                       if $opts{save_seqs_info};
-		save_seqs_fasta($res, 'prot_seq', $opts{save_fsprot_seqs}, %opts)  if $opts{save_fsprot_seqs};
-		save_seqs_fasta($res, 'gene_seq', $opts{save_fsgene_seqs}, %opts)  if $opts{save_fsgene_seqs};
-		save_filter_regs($opts{save_filter_regs}, $all_filters)            if $opts{save_filter_regs};
-		copy($gm_mod_fn, $opts{save_gm_mod})                               if $opts{save_gm_mod};
-		copy($fs_mod_fn, $opts{save_fs_mod})                               if $opts{save_fs_mod};
+		# Output results
+		&output( $res, $opts{output_filtered_fs}, $opts{calc_fs_scores}, $refID, \$ifs );
+
+		&save_seqs( $todo, $opts{save_seqs} );
+		&save_seqs_info( $todo, $opts{save_seqs_info} );
+		&save_seqs_fasta( $res, $refID, 'prot_seq', 'save_fsprot_seqs', %opts );
+		&save_seqs_fasta( $res, $refID, 'gene_seq', 'save_fsgene_seqs', %opts );
+		&save_filter_regs( $opts{save_filter_regs}, $all_filters );
+		copy( $gm_mod_fn, $opts{save_gm_mod} )                      if $opts{save_gm_mod};
+		copy( $fs_mod_fn, $opts{save_fs_mod} )                      if $opts{save_fs_mod};
 	}
 
-	remove_tree($opts{tmp_dir}) or warn "Couldn't remove tmp dir $opts{tmp_dir}";
+	remove_tree( $opts{tmp_dir} ) or warn "Couldn't remove tmp dir $opts{tmp_dir}";
 }
 
 ###
@@ -230,17 +233,15 @@ sub run
 sub output
 {
 	my( $data, $filtered_fs, $fs_scores, $refID, $ifs ) = @_;
+	return unless @$data;
 
-	my $tmpl = "%-6s\t%-15s\t%-15s\t%-15s\t%-7s\t%-6s\t%-15s\t%-15s\t%-15s\t%-15s";
-	$tmpl .= "\t%-12s\t%s\t%s\t%s\t%s" if $fs_scores;
-	$tmpl .= "\t%-15s" if $filtered_fs;
-	$tmpl .= "\n";
-
-	if( $$ifs < 2 ){
+	# Output HEADER of reuslts
+	unless( defined $$ifs ){
 		my @head = qw(Num Seq_ID FS_coord FS_coord_adj FS_type Strand Gene_Left Gene_Right Fragment_Left Fragment_Right);
 		push @head, qw(Gene_NC_Len FS_Path_Score Wo_FS_Path_score FS_Score LG_FS_Score) if $fs_scores;
 		push @head, 'Filter' if $filtered_fs;
-		printf($tmpl, @head);
+		print join("\t", @head ), "\n";
+		$$ifs += 0;
 	}
 
 	@$data = sort { $a->{left} <=> $b->{left} } @$data;
@@ -249,8 +250,15 @@ sub output
 	{
 		foreach my $fs ( @{$d->{fs}} )
 		{
-			my @values = ( $$ifs, $refID, $fs->{_coord}, $fs->{_coord_adj}, $fs->{type}, $d->{strand}, $fs->{_g_left}, $fs->{_g_right}, $d->{left}, $d->{right});
-			push(@values, $fs->{gene_nc_len}, $fs->{fs_path_score}, $fs->{wo_fs_path_score}, $fs->{score}, $fs->{lg_fs_score}) if $fs_scores;
+			my @values = ( $refID,
+					@{$fs}{ qw(_coord _coord_adj type) },
+					$d->{strand},
+					@{$fs}{ qw(_g_left _g_right) },
+					@{$d}{ qw(left right) }
+				);
+
+			push @values, @{$fs}{ qw(gene_nc_len fs_path_score wo_fs_path_score score lg_fs_score) } if $fs_scores;
+
 			if( $filtered_fs )
 			{
 				push @values, $fs->{_filter} || '-';
@@ -259,8 +267,7 @@ sub output
 			{
 				next if $fs->{_filter};
 			}
-			printf($tmpl, @values);
-			++$$ifs;
+			print join("\t", ++$$ifs, @values ), "\n";
 		}
 	}
 }
@@ -358,8 +365,8 @@ sub get_adj_stop_ignore_regs
 	{
 		my $gap_seq = get_adj_gap_seq($genome, $adj, $extra_len);
 		next if !$gap_seq;
-		
-		if( $gap_seq =~ /(TAG|TGA|TAA)(...)*(ATG|GTG|TTG)$/i ) 
+
+		if( $gap_seq =~ /(TAG|TGA|TAA)(...)*(ATG|GTG|TTG)$/i )
 		{
 			my $gap_left  = $adj->{strand} eq '+' ? $adj->{up_gene}{right}  :  $adj->{down_gene}{right};
 			my $gap_right = $adj->{strand} eq '+' ? $adj->{down_gene}{left} :  $adj->{up_gene}{left};
@@ -367,7 +374,7 @@ sub get_adj_stop_ignore_regs
 			push @$ignore_regs, {
 				left  => $gap_left  - $ignore_vicinity,
 				right => $gap_right + $ignore_vicinity,
-			};	
+			};
 		}
 	}
 
@@ -522,11 +529,11 @@ sub run_fsmark
 		foreach my $item ( @$todo )
 		{
 			print STDERR "\rGeneTack is running for fragment ".($i++)."/".@$todo.": $item->{left} .. $item->{right}           ";
-			
-			my $fsmark_fn = _generate_fsmark_file($item->{_seq}, $item->{left}, $hmmdef_fn, $chunk_dir, $fsmark_dir);
-			my $fs_hash   = _get_all_fs_from_fsmark_file($fsmark_fn, $item, $mod_fn, $hmmdef_tmpl, $fs_prob, $tse, $fs_score_dir, %opts);
-			push(@$res, $fs_hash) if $fs_hash;
-			
+
+			my $fsmark_fn = _generate_fsmark_file( $item->{_seq}, $item->{left}, $hmmdef_fn, $chunk_dir, $fsmark_dir );
+			my $fs_hash = _get_all_fs_from_fsmark_file( $fsmark_fn, $item, $mod_fn, $hmmdef_tmpl, $fs_prob, $tse, $fs_score_dir, %opts );
+			push @$res, $fs_hash if $fs_hash;
+
 			# Save the first 4 columns from the fs-mark file if requested
 			`cut -f1-4 $fsmark_fn  >  $opts{save_fsmark_files}/$item->{left}.fsmark` if $opts{save_fsmark_files};
 		}
@@ -551,8 +558,8 @@ sub run_fsmark
 		{
 			print STDERR "\rGeneTack is running for fragment ".($i++)."/".@$todo.": $item->{left} .. $item->{right}           ";
 			my $pid = $pm->start and next;
-			my $fsmark_fn = _generate_fsmark_file($item->{_seq}, $item->{left}, $hmmdef_fn, $chunk_dir, $fsmark_dir);
-			$pm->finish(0, {fsmark_fn => $fsmark_fn, item => $item});
+			my $fsmark_fn = _generate_fsmark_file( $item->{_seq}, $item->{left}, $hmmdef_fn, $chunk_dir, $fsmark_dir );
+			$pm->finish( 0, {fsmark_fn => $fsmark_fn, item => $item} );
 		}
 		$pm->wait_all_children;
 	}
@@ -584,7 +591,7 @@ sub _get_all_fs_from_fsmark_file
 		foreach my $fs ( @{$fs_hash->{fs}} )   # Calculate absolute coordintate
 		{
 			my $g_start       = $fsm->get_gene_start_for_fs($fs->{'pos'});
-			my $g_end         = $fsm->get_gene_end_for_fs($fs->{'pos'})+1;
+			my $g_end         = $fsm->get_gene_end_for_fs($fs->{'pos'}) + 1;
 			$fs->{_coord}     = $item->{strand} eq '+' ? ($item->{left} + $fs->{'pos'})   : ($item->{right} - $fs->{'pos'});
 			$fs->{_coord_adj} = $item->{strand} eq '+' ? ($item->{left} + $fs->{pos_adj}) : ($item->{right} - $fs->{pos_adj});
 			$fs->{_g_left}    = $item->{strand} eq '+' ? ($item->{left} + $g_start)       : ($item->{right} - $g_end      );
@@ -598,9 +605,9 @@ sub _get_all_fs_from_fsmark_file
 sub _generate_fsmark_file
 {
 	my($seq, $seqname, $hmmdef_fn, $chunk_dir, $fsmark_dir) = @_;
-	
+
 	my $tmp_seq_fn = "$chunk_dir/$seqname.fasta";
-	write_fasta($tmp_seq_fn, [{seq=>$seq, seqname=>$seqname}]);
+	write_fasta( $tmp_seq_fn, [{seq=>$seq, seqname=>$seqname}] );
 	system("genetack  -t $fsmark_dir/  -m $hmmdef_fn  -f $tmp_seq_fn  >  /dev/null");
 
 	return abs_path("$fsmark_dir/$seqname");
@@ -618,15 +625,15 @@ sub _generate_fsmark_file
 #        |--->{origin}
 #        |--->{_seq}
 #        |--->{_seqname}
-# 
+#
 sub get_fsmark_todo
 {
 	my($lst, $seq, $high_gc) = @_;
 
 	my @all_genes   = @{$lst->get_all_genes_zero_based()};
-	modify_gene_strand(\@all_genes) if $high_gc;
-	my $all_contigs = get_contigs_info(\@all_genes);
-	
+	&modify_gene_strand( \@all_genes ) if $high_gc;
+	my $all_contigs = &get_contigs_info( \@all_genes );
+
 	my($i, $todo) = (0, []);
 	foreach my $contig ( @$all_contigs )
 	{
@@ -636,7 +643,7 @@ sub get_fsmark_todo
 		my($left_gene, $right_gene) = ($genes[0], $genes[-1]);
 		die "Something is wrong: ".Data::Dumper->Dump([$left_gene, $right_gene, $contig],['$left_gene', '$right_gene', '$contig']) if $left_gene->{strand} ne $right_gene->{strand};
 		$i += $contig->{num_genes};
-		
+
 		my($s_left, $s_right, $seqname, $origin);
 		if($contig->{type} eq '+' || $contig->{type} eq '-')      # Usual genes -- cut them out with shoulders
 		{
@@ -662,7 +669,7 @@ sub get_fsmark_todo
 			_seq     => $seq_chunk,
 			_seqname => $seqname,
 		};
-		
+
 	}
 
 	return $todo;
@@ -674,7 +681,7 @@ sub get_fsmark_todo
 # 
 sub modify_gene_strand
 {
-	my($all_genes) = @_;
+	my( $all_genes ) = @_;
 
 	foreach my $g ( @$all_genes )
 	{
@@ -686,7 +693,7 @@ sub modify_gene_strand
 				$g->{strand} = '+';
 			}
 		}
-		else
+		else # (+)strand
 		{
 			if( $g->{cod_p}{f4} > 0.6 || $g->{cod_p}{f5} > 0.6 || $g->{cod_p}{f6} > 0.6 )
 			{
@@ -731,22 +738,26 @@ sub get_contigs_info
 
 sub save_filter_regs
 {
-	my($out_fn, $all_filters) = @_;
-	
+	my( $out_fn, $all_filters ) = @_;
+	return unless $out_fn;
+
 	open(OUT,'>',$out_fn) or die "Can't open file '$out_fn' to write: $!";
 	foreach my $filter ( @$all_filters )
 	{
-		print OUT "$filter->{name}\t$_->{left}\t$_->{right}\n" foreach @{$filter->{ignore_regs}};
+		print OUT "$filter->{name}\t$_->{left}\t$_->{right}\n" foreach @{ $filter->{ignore_regs} };
 	}
 	close OUT;
 }
 
 sub save_seqs_fasta
 {
-	my($res, $info_key, $out_fn, %opts) = @_;
-	
+	my( $res, $refID, $info_key, $save_key, %opts ) = @_;
+
+	my $out_fn = $opts{ $save_key };
+	return unless $out_fn;
+
 	print STDERR "Saving '$info_key' sequences to $out_fn...\n";
-	
+
 	my @all_seqs = ();
 	foreach my $contig ( @$res )
 	{
@@ -755,42 +766,44 @@ sub save_seqs_fasta
 		{
 			next if $fs->{_filter} && !$opts{output_filtered_fs};
 			my $info = $fsm->get_seq_info_for_fs_at_pos($fs->{'pos'});
-			if($info && $info->{$info_key})
+			if( $info && $info->{$info_key} )
 			{
-				push(@all_seqs, {seq => $info->{$info_key}, seqname => $fs->{_coord}});
+				push @all_seqs, {seq => $info->{$info_key}, seqname => "$refID.$fs->{_coord}"};
 			}
 		}
 	}
-	write_fasta($out_fn, \@all_seqs);
+
+	my $sv = $opts{nSq} < 2 ? '>' : '>>';
+	write_fasta( $out_fn, \@all_seqs, sv => $sv );
 }
 
 sub save_seqs
 {
-	my($all_items, $out_fn) = @_;
+	my( $all_items, $out_fn ) = @_;
+	return unless $out_fn;
+
 	my @all_seqs = map +{ seq => $_->{_seq}, seqname => $_->{_seqname} }, @$all_items;
-	write_fasta($out_fn, \@all_seqs, width => 100);
+	write_fasta( $out_fn, \@all_seqs, width => 100, sv => '>');
 }
 
 sub save_seqs_info
 {
-	my($all_items, $out_fn) = @_;
+	my( $all_items, $out_fn ) = @_;
+	return unless $out_fn;
 
-	open(OUT, '>'.$out_fn) or confess("Can't open file '$out_fn' to write: $!");
+	open(OUT, ">$out_fn") or confess("Can't open file '$out_fn' to write: $!");
 
-	print OUT "Num\tStrand\tNum_Genes\tLeft\tRight\tLength\tOrigin\n";
-
-	my $i = 1;
+	print OUT <<EOF;
+Num	Strand	Num_Genes	Left	Right	Length	Origin
+EOF
+	my $i;
 	foreach my $item ( @$all_items )
 	{
 		print OUT join("\t",
-			$i++,
-			$item->{strand},
-			$item->{origin},
-			$item->{num_genes},
-			$item->{left},
-			$item->{right},
-			$item->{right}-$item->{left}+1
-		)."\n";
+			++$i,
+			@{$item}{ qw(strand origin num_genes left right) },
+			$item->{right} - $item->{left} + 1
+		), "\n";
 	}
 
 	close OUT;
@@ -810,7 +823,7 @@ sub get_seq_chunk_with_marked_genes
 	$seq =~ s/(.{$right_s_len})$/lc($1)/e;
 
 	# Lower case intergenic regions 
-	for(my $i=0; $i < scalar(@$genes)-1; $i++)
+	for(my $i = 0; $i < scalar(@$genes)-1; $i++)
 	{
 		my($offset, $len);
 		if( $genes->[$i+1]{left} <= $genes->[$i]{right} )   # Gene overlap
@@ -945,8 +958,8 @@ sub revcomp
 
 sub usage
 {
-	my($msg) = @_;
-	$msg = $msg ? $msg."\n" : '';
+	my( $msg ) = @_;
+	$msg .= $msg ? "\n" : '';
 
 	my $script = File::Spec->splitpath($0);
 	return"$msg
@@ -1002,4 +1015,3 @@ FILTER OPTIONS:
 
 ";
 }
-

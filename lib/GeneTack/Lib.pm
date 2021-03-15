@@ -47,12 +47,12 @@ our %GENETIC_CODE = (
 
 sub translate_dna_to_prot
 {
-	my($dna_seq) = @_;
-	
+	my( $dna_seq ) = @_;
+
 	my $protein = '';
-	for(my $i=0; $i<(length($dna_seq)-2); $i+=3)
+	for( my $i = 0; $i < (length($dna_seq)-2); $i += 3 )
 	{
-		my $codon   = substr($dna_seq,$i,3);
+		my $codon   = substr $dna_seq, $i, 3;
 		my $u_codon = uc $codon;
 		if( $GENETIC_CODE{$u_codon} )
 		{
@@ -66,26 +66,26 @@ sub translate_dna_to_prot
 			return undef;
 		}
 	}
-	
+
 	return $protein;
 }
 
 sub create_tmp_dir
 {
-	my(%opts) = @_;
+	my( %opts ) = @_;
 	$opts{root_dir} ||= '.';
 	$opts{prefix}   ||= '';
-	
+
 	my $dir;
 	while(1)
 	{
 		$dir = $opts{root_dir}.'/'.$opts{prefix}.int(rand(1000000));
 		last unless -d $dir;
 	}
-	
+
 	mkdir($dir);
 	system("chmod 0777 $dir");
-	
+
 	return abs_path($dir);
 }
 
@@ -144,24 +144,25 @@ sub get_gc_content
 sub write_fasta
 {
 	my($fn, $seqs, %opts) = @_;
-	
-	open(FASTA, ">", $fn) or die "Can't open file $fn to write: $!";
-	
+	my $sv = $opts{sv} || '>'; # SAVE mode
+
+	open(FASTA, $sv, $fn) or die "Can't open file $fn to write: $!";
+
 	my $seq_str = '';
 	foreach my $h ( @$seqs )
 	{
 		my $head = $h->{fullname} || $h->{seqname};
 		my $seq  = $h->{seq};
-		
+
 		if( $opts{width} )
 		{
-			$seq =~ s/(\w{$opts{width}})/$1\n/g ;
+			$seq =~ s/(\w{$opts{width}})/$1\n/g;
 			$seq =~ s/[\n\r]+$//g;
 		}
-		
+
 		print FASTA ">$head\n$seq\n";
 	}
-	
+
 	close FASTA;
 }
 
