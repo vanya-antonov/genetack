@@ -768,7 +768,7 @@ sub save_seqs_fasta
 			my $info = $fsm->get_seq_info_for_fs_at_pos($fs->{'pos'});
 			if( $info && $info->{$info_key} )
 			{
-				push @all_seqs, {seq => $info->{$info_key}, seqname => "$refID.$fs->{_coord}"};
+				push @all_seqs, {seq => $info->{$info_key}, seqname => "$refID:$fs->{_coord}"};
 			}
 		}
 	}

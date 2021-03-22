@@ -19,11 +19,15 @@ use Data::Dumper;
 my $input_fna        = 'two_contigs.fna';
 my $save_fsgene_seqs = 'fsgene_seqs.fna';
 my $save_fsprot_seqs = 'fsprot_seqs.faa';
+# my $model_gm         = '--gm_mod_fn ./data/MODEL.gm.mod';
+# my $model_fs         = '--fs_mod_fn ./data/MODEL.fs.mod';
 
 (my $log_file = $input_fna ) =~s/fna$/log/;
 
 `rm -f $save_fsgene_seqs $save_fsprot_seqs $log_file`;
 `../genetack_gm.pl --save_fsgene_seqs $save_fsgene_seqs --save_fsprot_seqs $save_fsprot_seqs ../examples/$input_fna > $log_file`;
+# `../genetack_gm.pl --save_fsgene_seqs $save_fsgene_seqs --save_fsprot_seqs $save_fsprot_seqs $model_gm $model_fs ../examples/$input_fna > $log_file`;
+
 
 # Read test file
 my $tdata = &read_file("data/$log_file");
@@ -32,6 +36,9 @@ my $tdata = &read_file("data/$log_file");
 my $rdata = &read_file( $log_file );
 
 is_deeply( $tdata, $rdata, 'Check multiple contigs FASTA');
+
+print "Check output files: *.fna, *.fna\n";
+system('md5sum', '-c', './data/sums.md5');
 
 `rm -f $save_fsgene_seqs $save_fsprot_seqs $log_file`;
 exit;
