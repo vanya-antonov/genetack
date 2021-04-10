@@ -49,7 +49,7 @@ use warnings;
 # 
 
 use Data::Dumper;
-use Carp qw(confess); 
+use Carp qw(confess cluck);
 use Storable qw(dclone);
 
 use base qw(GeneTack::GeneMark);
@@ -85,7 +85,7 @@ sub new
 		overlaps => [],
 	}, $class;
 
-	$self->_init( $fn, $refID );
+	$self->_init( $fn, $refID ) || return undef;
 
 	# add $self->{genes}->[i]->{cod_p} (coding potential) to each gene
 	$self->_calculate_coding_potential($opts{gdata_fn}) if $opts{gdata_fn};
@@ -161,10 +161,13 @@ sub _init
 	my $self = shift;
 	my( $fn, $refID ) = @_;
 
-	$self->_read_fn( $fn, $refID );
+	$self->_read_fn( $fn, $refID ) || return undef;
+
 	$self->_calculate_frames();
 	$self->_find_overlaps_in_strand('+');
 	$self->_find_overlaps_in_strand('-');
+
+	return 1;
 }
 
 ###
@@ -245,10 +248,11 @@ sub _read_fn
 	my( $fn, $refID ) = @_;	# MODEL.lst file, and sequence ID
 
 	my @opt_keys;
-	my( $i, $flg ) = (0, 0);
+	my $i;
+	my $flg = 0;
+	my $emsg = "Sequence '$refID' in file '$fn'";
 
 	open(my $fh, '<', $fn) or die "Can't open file '$fn': $!";
-	# Skip lines until 'Predicted genes'
 	while(<$fh>){
 =comment
 ...
@@ -261,11 +265,11 @@ Predicted genes
 		if( /FASTA\s+definition\s+line:\s+(\S+)/i ){
 
 			if( $refID eq $1 ){
-				$flg = 1;
+				$flg = 1; # Found a result with the required ID
 			}elsif( $flg > 1 ){
-				last;
+				last;	# Finish the search
 			}else{
-				$flg = 0;
+				$flg = 0; # Skip lines
 			}
 			next;
 		}
@@ -282,7 +286,7 @@ Predicted genes
 				confess("File '$fn' has unknown optional column '$name'") if !exists $OPT_COLS{ $name };
 				push @opt_keys, $OPT_COLS{ $name }{'key'};
 			}
-			confess("File '$fn' does NOT have optional columns") unless @opt_keys;
+			confess("$emsg does NOT have optional columns") unless @opt_keys;
 
 			++$flg;
 			next;
@@ -296,10 +300,10 @@ Predicted genes
 1591        -      178725     >179279          555        1       13  -1.6296
 =cut
 		my @vals = split /\s+/;
-		confess("File '$fn' has wrong format: ".Data::Dumper->Dump([\@vals], ['vals'])) if @vals != 6+@opt_keys;
+		confess("$emsg has WRONG FORMAT: ".Data::Dumper->Dump([\@vals], ['vals'])) if @vals != 6+@opt_keys;
 
 		# Substitute coordinates: '<3' --> '3' and >179279 --> 179279
-		$vals[$_] =~ s/<|>//g for 2, 3;
+		$vals[$_] =~ s/\D+//g for 2, 3;
 
 		my %opt_vals = map { $opt_keys[$_] => $vals[6+$_] } 0 .. $#opt_keys;
 		push @{ $self->{'genes'} }, {
@@ -314,10 +318,12 @@ Predicted genes
 #			refID   => $refID,
 			%opt_vals,
 		};
-	};
+
+	}
 	close $fh;
 
-	confess("File '$fn' does NOT have Predicted genes") unless $i;
+	cluck("$emsg does NOT have \x1b[31mpredicted genes\x1b[0m") unless $i; # was confess()
+	return $i;
 }
 
 

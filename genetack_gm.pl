@@ -168,13 +168,19 @@ sub run
 	my $high_gc = get_gc_content( \$totSeq ) > $opts{high_gc_thr} ? 1 : 0;	#???
 
 	# Run GeneMark. Create .gdata file for the high GC genomes only.
-	my($gm_mod_fn, $fs_mod_fn, $lst_fn, $gdata_fn) = GeneTack::GeneMark::run_gm($opts{seq_fn}, $opts{cod_order}, $opts{gm_order}, $opts{gm_cdec},
+	my( $gm_mod_fn, $fs_mod_fn, $lst_fn, $gdata_fn ) = GeneTack::GeneMark::run_gm( $opts{seq_fn}, $opts{cod_order}, $opts{gm_order}, $opts{gm_cdec},
 		run_dir       => $opts{tmp_dir},
 		genemark_path => $opts{genemark_path},
 		gdata         => $high_gc,
 		fs_mod_fn     => $opts{fs_mod_fn},
 		gm_mod_fn     => $opts{gm_mod_fn},
 	);
+
+	unless( $gm_mod_fn ){
+		remove_tree( $opts{tmp_dir} ) or warn "Couldn't remove tmp dir $opts{tmp_dir}";
+		warn "\x1b[31mMODEL.gm_hmm.mod\x1b[0m file was not created: $!";
+		return;
+	}
 
 	my $tse_prob = $high_gc ? $opts{tse_high_gc} : $opts{tse};
 
@@ -186,6 +192,11 @@ sub run
 
 		# Prepare TODO for FSMark -- genome chunks which will be used as input to run FSMark
 		my $lst  = GeneTack::GeneMark::Lst->new( $lst_fn, $refID, gdata_fn => $gdata_fn );
+		unless( $lst ){
+			warn("\x1b[31m$refID\x1b[0m discarded");
+			next;
+		}
+
 		my $todo = &get_fsmark_todo( $lst, $seq, defined( $gdata_fn ) );
 		my $res  = &run_fsmark( $todo, $seq, $opts{hmmdef_tmpl}, $fs_mod_fn, $opts{fn_body}, $opts{fs_prob}, $tse_prob, %opts );
 
